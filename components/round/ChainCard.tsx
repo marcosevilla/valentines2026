@@ -10,9 +10,12 @@ interface ChainCardProps {
   searchMode?: "media" | "person";
   isActive?: boolean;
   isNew?: boolean;
+  isNewest?: boolean;
+  onRemove?: () => void;
   waveDelay?: number;
   isWaving?: boolean;
   heightDvh?: number;
+  bobIndex?: number;
 }
 
 export function ChainCard({
@@ -23,12 +26,15 @@ export function ChainCard({
   searchMode,
   isActive = false,
   isNew = false,
+  isNewest = false,
+  onRemove,
   waveDelay = 0,
   isWaving = false,
   heightDvh,
+  bobIndex = 0,
 }: ChainCardProps) {
   const isBookend = variant === "start" || variant === "end";
-  const h = heightDvh ?? (isBookend ? 50 : 35);
+  const h = heightDvh ?? (isBookend ? 30 : 21);
 
   if (variant === "placeholder") {
     return (
@@ -36,7 +42,7 @@ export function ChainCard({
         <div
           className="aspect-[3/4] flex items-center justify-center"
           style={{
-            height: `${h * 0.7}dvh`,
+            height: `${h}dvh`,
             border: "1.5px dashed var(--color-border)",
             background: "var(--color-surface)",
             transition: "height 0.5s ease",
@@ -50,23 +56,36 @@ export function ChainCard({
 
   let imgSrc = "";
   if (variant === "start" || variant === "end" || variant === "actor") {
-    imgSrc = imagePath ? getProfileUrl(imagePath, "w185") : "";
+    imgSrc = imagePath ? getProfileUrl(imagePath, "w500") : "";
   } else {
-    imgSrc = imagePath ? getPosterUrl(imagePath, "w154") : "";
+    imgSrc = imagePath ? getPosterUrl(imagePath, "w342") : "";
   }
+
+  const shouldBob = !isBookend && !isNew && !isWaving && variant !== "placeholder";
+  const bobAnim = bobIndex % 2 === 0 ? "card-bob" : "card-bob-alt";
+  const bobDuration = 3 + (bobIndex % 3) * 0.5; // 3s, 3.5s, or 4s
+  const bobDelay = bobIndex * 0.4;
 
   return (
     <div
-      className={`flex flex-col items-center gap-1.5 flex-shrink-0 ${isNew ? "card-flip-in" : ""} ${isWaving ? "card-wave" : ""}`}
-      style={isWaving ? { animationDelay: `${waveDelay}ms` } : undefined}
+      className={`flex flex-col items-center gap-1.5 flex-shrink-0 ${isNew ? "card-flip-in card-glow" : ""} ${isWaving ? "card-wave" : ""}`}
+      style={{
+        ...(isWaving ? { animationDelay: `${waveDelay}ms` } : {}),
+        ...(shouldBob ? {
+          animation: `${bobAnim} ${bobDuration}s ease-in-out ${bobDelay}s infinite`,
+        } : {}),
+      }}
     >
       <div
-        className="aspect-[3/4] overflow-hidden"
+        className="relative aspect-[3/4] overflow-hidden group"
         style={{
           height: `${h}dvh`,
           border: isActive
-            ? "1.5px solid var(--color-accent)"
-            : "1px solid var(--color-border)",
+            ? "1px solid var(--color-accent)"
+            : "1px solid rgba(255, 255, 255, 0.08)",
+          boxShadow: isActive
+            ? "0 0 12px 0 rgba(var(--color-accent-rgb, 230, 57, 70), 0.15)"
+            : "inset 0 0 0 0.5px rgba(255, 255, 255, 0.04)",
           transition: "all 0.5s ease",
         }}
       >
@@ -82,10 +101,31 @@ export function ChainCard({
             style={{ background: "var(--color-surface)" }}
           />
         )}
+
+        {/* Undo X button — appears on hover over newest card */}
+        {isNewest && onRemove && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove();
+            }}
+            className="absolute top-1 right-1 w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+            style={{
+              background: "rgba(0,0,0,0.7)",
+              color: "var(--color-text)",
+              border: "1px solid var(--color-border)",
+            }}
+            aria-label="Undo"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M1 1l8 8M9 1l-8 8" />
+            </svg>
+          </button>
+        )}
       </div>
       {name && (
         <span
-          className="text-[10px] uppercase tracking-[0.08em] text-center truncate max-w-[100px]"
+          className="text-xs uppercase tracking-[0.08em] text-center truncate max-w-[120px]"
           style={{ color: "var(--color-text)" }}
         >
           {name}
@@ -95,19 +135,26 @@ export function ChainCard({
   );
 }
 
-function ChainConnector({ confirmed = true }: { confirmed?: boolean }) {
+function ChainConnector({ confirmed = true, swayIndex = 0 }: { confirmed?: boolean; swayIndex?: number }) {
+  const duration = 3 + (swayIndex % 3) * 0.6;
+  const delay = swayIndex * 0.3;
+
   return (
     <svg
-      width="24"
-      height="48"
-      viewBox="0 0 24 48"
-      className="flex-shrink-0 mx-0.5"
+      width="28"
+      height="40"
+      viewBox="0 0 28 40"
+      className="flex-shrink-0 mx-0"
+      style={{
+        animation: `string-sway ${duration}s ease-in-out ${delay}s infinite`,
+        transformOrigin: "center center",
+      }}
     >
       <path
-        d="M 0 24 C 7 10, 17 38, 24 24"
+        d="M 0 20 C 8 8, 20 32, 28 20"
         stroke={confirmed ? "var(--color-accent)" : "var(--color-border)"}
         fill="none"
-        strokeWidth="1.5"
+        strokeWidth="1"
         strokeLinecap="round"
       />
     </svg>

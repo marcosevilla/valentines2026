@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-playfair), Georgia, serif;
 }
 
@@ -107,8 +107,24 @@ body {
   }
 }
 
+@keyframes card-glow {
+  0% {
+    box-shadow: 0 0 0 0 var(--color-accent);
+  }
+  40% {
+    box-shadow: 0 0 16px 4px var(--color-accent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
 .card-flip-in {
   animation: card-flip-in 0.4s ease-out both;
+}
+
+.card-glow > .aspect-\[3\/4\] {
+  animation: card-glow 0.8s ease-out 0.2s both;
 }
 
 .card-wave {
@@ -122,6 +138,38 @@ body {
 .placeholder-appear {
   animation: placeholder-appear 0.3s ease-out both;
   animation-delay: 0.3s;
+}
+
+/* Gentle physics-like bob for intermediate cards */
+@keyframes card-bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes card-bob-alt {
+  0%, 100% {
+    transform: translateY(-4px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+/* String connector sway — rotate the connector slightly */
+@keyframes string-sway {
+  0%, 100% {
+    transform: scaleY(1) rotate(0deg);
+  }
+  25% {
+    transform: scaleY(1.1) rotate(1.5deg);
+  }
+  75% {
+    transform: scaleY(0.9) rotate(-1.5deg);
+  }
 }
 
 /* Hide scrollbar on chain strip */

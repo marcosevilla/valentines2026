@@ -73,31 +73,60 @@ export function ChainBuilder() {
       : `Who else was in ${selectedMedia?.title}?`;
 
   return (
-    <div className="flex flex-col items-center w-full gap-6">
-      {/* Round label + target */}
-      <div className="text-center">
-        <p
-          className="text-xs uppercase tracking-[0.2em]"
-          style={{ color: "var(--color-text-secondary)" }}
-        >
-          Round {round.number}
-        </p>
-        <p
-          className="text-sm mt-1"
-          style={{ color: "var(--color-text-secondary)" }}
-        >
-          Connect <span style={{ color: "var(--color-text)" }}>{round.startActress.name}</span> to{" "}
-          <span style={{ color: "var(--color-accent)" }}>{round.endActress.name}</span>
-        </p>
-      </div>
+    <div className="flex flex-col w-full flex-1">
+      {/* Round header */}
+      <h1
+        className="text-3xl uppercase tracking-[0.05em] font-bold text-center pt-6 pb-4"
+        style={{ color: "var(--color-text)" }}
+      >
+        Round {round.number}
+      </h1>
 
-      {/* Horizontal chain strip */}
+      {/* Spacer above chain — pushes chain to vertical center */}
+      <div className="flex-[0.8]" />
+
+      {/* Horizontal chain strip + search bar below */}
       <ChainDisplay
         chain={chain}
         currentSearchMode={currentSearchMode}
         targetActress={round.endActress}
         isComplete={false}
-      />
+        onUndo={() => {
+          dispatch({ type: "UNDO_LAST" });
+          setError(null);
+        }}
+      >
+        <div className="max-w-[240px] w-full">
+          <SearchInput
+            mode={currentSearchMode}
+            placeholder={placeholder}
+            onSelectMedia={handleSelectMedia}
+            onSelectPerson={handleSelectPerson}
+            disabled={isValidating}
+            excludeActorIds={excludeActorIds}
+          />
+
+          {/* Validation state */}
+          {isValidating && (
+            <p
+              className="text-xs uppercase tracking-[0.15em] mt-2"
+              style={{ color: "var(--color-text-secondary)" }}
+            >
+              Checking...
+            </p>
+          )}
+
+          {/* Error */}
+          {error && (
+            <p
+              className="text-xs mt-2 max-w-[280px]"
+              style={{ color: "var(--color-error)" }}
+            >
+              {error}
+            </p>
+          )}
+        </div>
+      </ChainDisplay>
 
       {/* Soft limit warning */}
       {showSoftLimit && (
@@ -109,68 +138,24 @@ export function ChainBuilder() {
         </p>
       )}
 
-      {/* Search bar — left-aligned under chain */}
-      <div className="w-full px-4 max-w-sm self-start">
-        <SearchInput
-          mode={currentSearchMode}
-          placeholder={placeholder}
-          onSelectMedia={handleSelectMedia}
-          onSelectPerson={handleSelectPerson}
-          disabled={isValidating}
-          excludeActorIds={excludeActorIds}
-        />
-      </div>
+      {/* Spacer pushes Start over to bottom */}
+      <div className="flex-[0.8]" />
 
-      {/* Validation state */}
-      {isValidating && (
-        <p
-          className="text-xs uppercase tracking-[0.15em]"
-          style={{ color: "var(--color-text-secondary)" }}
-        >
-          Checking...
-        </p>
-      )}
-
-      {/* Error */}
-      {error && (
-        <p
-          className="text-xs text-center max-w-[280px]"
-          style={{ color: "var(--color-error)" }}
-        >
-          {error}
-        </p>
-      )}
-
-      {/* Undo / Reset */}
+      {/* Reset chain */}
       {chain.length > 1 && (
-        <div className="flex gap-4">
-          <button
-            onClick={() => {
-              dispatch({ type: "UNDO_LAST" });
-              setError(null);
-            }}
-            className="text-xs uppercase tracking-[0.15em] py-1.5 transition-colors"
-            style={{
-              color: "var(--color-text-secondary)",
-              borderBottom: "1px solid var(--color-border)",
-            }}
-          >
-            Undo
-          </button>
-          <button
-            onClick={() => {
-              dispatch({ type: "RESET_CHAIN" });
-              setError(null);
-            }}
-            className="text-xs uppercase tracking-[0.15em] py-1.5 transition-colors"
-            style={{
-              color: "var(--color-text-secondary)",
-              borderBottom: "1px solid var(--color-border)",
-            }}
-          >
-            Start over
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            dispatch({ type: "RESET_CHAIN" });
+            setError(null);
+          }}
+          className="text-xs uppercase tracking-[0.15em] py-1.5 transition-colors self-center mb-2"
+          style={{
+            color: "var(--color-text-secondary)",
+            borderBottom: "1px solid var(--color-border)",
+          }}
+        >
+          Start over
+        </button>
       )}
     </div>
   );

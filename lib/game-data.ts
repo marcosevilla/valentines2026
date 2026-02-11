@@ -14,6 +14,8 @@ export const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p";
 
 export function getProfileUrl(path: string | null, size = "w185"): string {
   if (!path) return "";
+  // Local images (in public/) — return as-is
+  if (path.startsWith("/actresses/")) return path;
   return `${TMDB_IMAGE_BASE}/${size}${path}`;
 }
 
@@ -31,12 +33,12 @@ export const ROUNDS: RoundConfig[] = [
     startActress: {
       id: ACTRESS_IDS.toniCollette,
       name: "Toni Collette",
-      profilePath: "/lzXRh16qe4HHeBN6tMyw0DHvaMn.jpg",
+      profilePath: "/actresses/toni-collette-hereditary.jpg",
     },
     endActress: {
       id: ACTRESS_IDS.florencePugh,
       name: "Florence Pugh",
-      profilePath: "/1Uvfh7xL4U2evkhs0M3C7BbBYFf.jpg",
+      profilePath: "/actresses/florence-pugh-midsommar.jpg",
     },
     word: "Will",
   },
@@ -48,12 +50,12 @@ export const ROUNDS: RoundConfig[] = [
     startActress: {
       id: ACTRESS_IDS.florencePugh,
       name: "Florence Pugh",
-      profilePath: "/1Uvfh7xL4U2evkhs0M3C7BbBYFf.jpg",
+      profilePath: "/actresses/florence-pugh-midsommar.jpg",
     },
     endActress: {
       id: ACTRESS_IDS.jennaOrtega,
       name: "Jenna Ortega",
-      profilePath: "/cV4x7jNmsGLdKZn5I6xVF3Ltnmg.jpg",
+      profilePath: "/actresses/jenna-ortega-x.jpg",
     },
     word: "you",
   },
@@ -65,12 +67,12 @@ export const ROUNDS: RoundConfig[] = [
     startActress: {
       id: ACTRESS_IDS.jennaOrtega,
       name: "Jenna Ortega",
-      profilePath: "/cV4x7jNmsGLdKZn5I6xVF3Ltnmg.jpg",
+      profilePath: "/actresses/jenna-ortega-x.jpg",
     },
     endActress: {
       id: ACTRESS_IDS.samaraWeaving,
       name: "Samara Weaving",
-      profilePath: "/7ThO37CpqkBRgrosep0ROVs2q5s.jpg",
+      profilePath: "/actresses/samara-weaving-ready-or-not.png",
     },
     word: "be",
   },
@@ -82,12 +84,12 @@ export const ROUNDS: RoundConfig[] = [
     startActress: {
       id: ACTRESS_IDS.samaraWeaving,
       name: "Samara Weaving",
-      profilePath: "/7ThO37CpqkBRgrosep0ROVs2q5s.jpg",
+      profilePath: "/actresses/samara-weaving-ready-or-not.png",
     },
     endActress: {
       id: ACTRESS_IDS.naomiScott,
       name: "Naomi Scott",
-      profilePath: "/knSGMaEaH6CZaYw7GQpvxyJcsz7.jpg",
+      profilePath: "/actresses/naomi-scott-smile-2.jpg",
     },
     word: "my",
   },
@@ -99,12 +101,12 @@ export const ROUNDS: RoundConfig[] = [
     startActress: {
       id: ACTRESS_IDS.naomiScott,
       name: "Naomi Scott",
-      profilePath: "/knSGMaEaH6CZaYw7GQpvxyJcsz7.jpg",
+      profilePath: "/actresses/naomi-scott-smile-2.jpg",
     },
     endActress: {
       id: ACTRESS_IDS.toniCollette,
       name: "Toni Collette",
-      profilePath: "/lzXRh16qe4HHeBN6tMyw0DHvaMn.jpg",
+      profilePath: "/actresses/toni-collette-hereditary.jpg",
     },
     word: "Valentine?",
   },

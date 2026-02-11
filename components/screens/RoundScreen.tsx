@@ -26,22 +26,26 @@ export function RoundScreen() {
 
   return (
     <div className="min-h-dvh flex flex-col grain-bg">
-      <div className="flex-1 flex flex-col items-center justify-center py-8">
-        {roundState.phase === "clip" && (
-          <VideoClip
-            round={round}
-            onContinue={() => dispatch({ type: "SKIP_CLIP" })}
-          />
-        )}
+      {roundState.phase === "chain" && !showIntro ? (
+        <div className="flex-1 flex flex-col">
+          <ChainBuilder />
+        </div>
+      ) : (
+        <div className="flex-1 flex flex-col items-center justify-center py-8">
+          {roundState.phase === "clip" && (
+            <VideoClip
+              round={round}
+              onContinue={() => dispatch({ type: "SKIP_CLIP" })}
+            />
+          )}
 
-        {roundState.phase === "chain" && showIntro && (
-          <RoundIntro round={round} onComplete={handleIntroComplete} />
-        )}
+          {roundState.phase === "chain" && showIntro && (
+            <RoundIntro round={round} onComplete={handleIntroComplete} />
+          )}
 
-        {roundState.phase === "chain" && !showIntro && <ChainBuilder />}
-
-        {roundState.phase === "won" && <RoundComplete />}
-      </div>
+          {roundState.phase === "won" && <RoundComplete />}
+        </div>
+      )}
     </div>
   );
 }

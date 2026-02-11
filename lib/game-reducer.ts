@@ -4,7 +4,7 @@ import { ROUNDS } from "./game-data";
 function createInitialRoundState(roundIndex: number): RoundState {
   const round = ROUNDS[roundIndex];
   return {
-    phase: "clip",
+    phase: "chain",
     chain: [
       {
         type: "actor",

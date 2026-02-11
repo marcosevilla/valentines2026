@@ -84,18 +84,26 @@ export function SearchInput({
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onFocus={() => results.length > 0 && setIsOpen(true)}
         placeholder={placeholder}
         disabled={disabled}
         autoComplete="off"
         autoCorrect="off"
         spellCheck="false"
         autoCapitalize="words"
-        className="w-full px-4 py-3 text-sm outline-none transition-all"
+        className="w-full py-3 text-base outline-none transition-all placeholder:text-left"
         style={{
-          background: "var(--color-surface)",
+          background: "transparent",
           color: "var(--color-text)",
-          borderBottom: "1px solid var(--color-border)",
+          borderBottom: "2px solid var(--color-border)",
+        }}
+        onFocusCapture={(e) => {
+          e.currentTarget.style.borderBottomWidth = "3px";
+          e.currentTarget.style.borderBottomColor = "var(--color-accent)";
+          results.length > 0 && setIsOpen(true);
+        }}
+        onBlurCapture={(e) => {
+          e.currentTarget.style.borderBottomWidth = "2px";
+          e.currentTarget.style.borderBottomColor = "var(--color-border)";
         }}
       />
       {isLoading && (
