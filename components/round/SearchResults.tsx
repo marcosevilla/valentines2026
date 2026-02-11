@@ -32,8 +32,11 @@ export function SearchResults({
   return (
     <div
       ref={ref}
-      className="absolute z-50 w-full mt-1 rounded-lg overflow-hidden shadow-lg max-h-64 overflow-y-auto"
-      style={{ background: "var(--color-surface)", border: "1px solid rgba(255,255,255,0.1)" }}
+      className="absolute z-50 w-full mt-0 overflow-hidden max-h-64 overflow-y-auto"
+      style={{
+        background: "var(--color-surface)",
+        borderBottom: "1px solid var(--color-border)",
+      }}
     >
       {results.map((item) => {
         if (mode === "media") {
@@ -42,22 +45,28 @@ export function SearchResults({
             <button
               key={`${media.mediaType}-${media.id}`}
               onClick={() => onSelect(media)}
-              className="w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-white/5 transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/[0.03]"
             >
               {media.posterPath ? (
                 <img
                   src={getPosterUrl(media.posterPath, "w92")}
                   alt=""
-                  className="w-8 h-12 rounded object-cover flex-shrink-0"
+                  className="w-7 h-10 object-cover flex-shrink-0"
                 />
               ) : (
-                <div className="w-8 h-12 rounded flex-shrink-0 bg-white/10" />
+                <div
+                  className="w-7 h-10 flex-shrink-0"
+                  style={{ background: "var(--color-border)" }}
+                />
               )}
               <div className="min-w-0">
                 <div className="text-sm truncate" style={{ color: "var(--color-text)" }}>
                   {media.title}
                 </div>
-                <div className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+                <div
+                  className="text-xs"
+                  style={{ color: "var(--color-text-secondary)" }}
+                >
                   {media.mediaType === "tv" ? "TV" : "Film"}
                   {media.year ? `, ${media.year}` : ""}
                 </div>
@@ -71,16 +80,19 @@ export function SearchResults({
           <button
             key={person.id}
             onClick={() => onSelect(person)}
-            className="w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-white/5 transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-white/[0.03]"
           >
             {person.profilePath ? (
               <img
                 src={getProfileUrl(person.profilePath, "w45")}
                 alt=""
-                className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                className="w-7 h-7 rounded-full object-cover flex-shrink-0"
               />
             ) : (
-              <div className="w-8 h-8 rounded-full flex-shrink-0 bg-white/10" />
+              <div
+                className="w-7 h-7 rounded-full flex-shrink-0"
+                style={{ background: "var(--color-border)" }}
+              />
             )}
             <div className="text-sm truncate" style={{ color: "var(--color-text)" }}>
               {person.name}

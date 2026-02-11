@@ -20,7 +20,6 @@ export function ChainBuilder() {
   const currentActor = chain.length > 0 ? chain[chain.length - 1] : null;
   const showSoftLimit = chain.length >= CHAIN_SOFT_LIMIT;
 
-  // Collect all actor IDs in the chain to prevent loops
   const excludeActorIds = useMemo(
     () => chain.filter((l) => l.type === "actor").map((l) => l.id),
     [chain],
@@ -74,34 +73,44 @@ export function ChainBuilder() {
       : `Who else was in ${selectedMedia?.title}?`;
 
   return (
-    <div className="flex flex-col items-center gap-4 w-full px-4">
-      {/* Target */}
+    <div className="flex flex-col items-center w-full gap-6">
+      {/* Round label + target */}
       <div className="text-center">
-        <span className="text-xs uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>
-          Connect to
-        </span>
-        <div className="text-lg font-semibold" style={{ color: "var(--color-accent)" }}>
-          {round.endActress.name}
-        </div>
+        <p
+          className="text-xs uppercase tracking-[0.2em]"
+          style={{ color: "var(--color-text-secondary)" }}
+        >
+          Round {round.number}
+        </p>
+        <p
+          className="text-sm mt-1"
+          style={{ color: "var(--color-text-secondary)" }}
+        >
+          Connect <span style={{ color: "var(--color-text)" }}>{round.startActress.name}</span> to{" "}
+          <span style={{ color: "var(--color-accent)" }}>{round.endActress.name}</span>
+        </p>
       </div>
 
-      {/* Chain */}
-      <div className="w-full max-h-48 overflow-y-auto">
-        <ChainDisplay chain={chain} />
-      </div>
+      {/* Horizontal chain strip */}
+      <ChainDisplay
+        chain={chain}
+        currentSearchMode={currentSearchMode}
+        targetActress={round.endActress}
+        isComplete={false}
+      />
 
       {/* Soft limit warning */}
       {showSoftLimit && (
-        <div
-          className="text-xs text-center px-3 py-1.5 rounded-lg"
-          style={{ background: "rgba(233, 69, 96, 0.15)", color: "var(--color-accent-soft)" }}
+        <p
+          className="text-xs text-center"
+          style={{ color: "var(--color-text-secondary)" }}
         >
-          Long chain! Maybe try a different path?
-        </div>
+          Long chain — try a different path?
+        </p>
       )}
 
-      {/* Search */}
-      <div className="w-full">
+      {/* Search bar — left-aligned under chain */}
+      <div className="w-full px-4 max-w-sm self-start">
         <SearchInput
           mode={currentSearchMode}
           placeholder={placeholder}
@@ -114,31 +123,37 @@ export function ChainBuilder() {
 
       {/* Validation state */}
       {isValidating && (
-        <div className="text-sm" style={{ color: "var(--color-text-muted)" }}>
+        <p
+          className="text-xs uppercase tracking-[0.15em]"
+          style={{ color: "var(--color-text-secondary)" }}
+        >
           Checking...
-        </div>
+        </p>
       )}
 
       {/* Error */}
       {error && (
-        <div
-          className="text-sm text-center px-3 py-2 rounded-lg w-full"
-          style={{ background: "rgba(239, 68, 68, 0.15)", color: "var(--color-error)" }}
+        <p
+          className="text-xs text-center max-w-[280px]"
+          style={{ color: "var(--color-error)" }}
         >
           {error}
-        </div>
+        </p>
       )}
 
       {/* Undo / Reset */}
       {chain.length > 1 && (
-        <div className="flex gap-3">
+        <div className="flex gap-4">
           <button
             onClick={() => {
               dispatch({ type: "UNDO_LAST" });
               setError(null);
             }}
-            className="text-xs px-3 py-1.5 rounded-lg transition-colors hover:bg-white/10"
-            style={{ color: "var(--color-text-muted)", border: "1px solid rgba(255,255,255,0.1)" }}
+            className="text-xs uppercase tracking-[0.15em] py-1.5 transition-colors"
+            style={{
+              color: "var(--color-text-secondary)",
+              borderBottom: "1px solid var(--color-border)",
+            }}
           >
             Undo
           </button>
@@ -147,8 +162,11 @@ export function ChainBuilder() {
               dispatch({ type: "RESET_CHAIN" });
               setError(null);
             }}
-            className="text-xs px-3 py-1.5 rounded-lg transition-colors hover:bg-white/10"
-            style={{ color: "var(--color-text-muted)", border: "1px solid rgba(255,255,255,0.1)" }}
+            className="text-xs uppercase tracking-[0.15em] py-1.5 transition-colors"
+            style={{
+              color: "var(--color-text-secondary)",
+              borderBottom: "1px solid var(--color-border)",
+            }}
           >
             Start over
           </button>

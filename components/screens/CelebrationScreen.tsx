@@ -17,7 +17,6 @@ export function CelebrationScreen() {
   useEffect(() => {
     if (phase !== "montage") return;
 
-    // If no video files, skip montage after showing each word briefly
     if (!hasVideos) {
       const timer = setTimeout(() => {
         if (currentClip < ROUNDS.length - 1) {
@@ -44,7 +43,6 @@ export function CelebrationScreen() {
 
   const handleNo = () => {
     setNoPressed(true);
-    // After a moment, only show yes
     setTimeout(() => setNoPressed(false), 2000);
   };
 
@@ -53,7 +51,7 @@ export function CelebrationScreen() {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center gap-6 px-6">
         <div
-          className="relative w-full max-w-sm aspect-video rounded-xl overflow-hidden"
+          className="relative w-full max-w-sm aspect-video overflow-hidden"
           style={{ background: "var(--color-surface)" }}
         >
           {hasVideos ? (
@@ -74,40 +72,57 @@ export function CelebrationScreen() {
                 src={getProfileUrl(round.startActress.profilePath, "w185")}
                 alt={round.clipActress}
                 className="w-16 h-16 rounded-full object-cover"
+                style={{ border: "1px solid var(--color-border)" }}
               />
-              <div className="text-sm" style={{ color: "var(--color-text)" }}>
+              <p
+                className="text-xs uppercase tracking-[0.15em]"
+                style={{ color: "var(--color-text-secondary)" }}
+              >
                 {round.clipActress}
-              </div>
+              </p>
             </div>
           )}
 
           {/* Word overlay */}
           <div className="absolute inset-0 flex items-center justify-center">
             <span
-              className="text-4xl font-bold"
+              className="font-serif text-4xl font-bold italic"
               style={{
                 color: "#fff",
-                textShadow: "0 2px 8px rgba(0,0,0,0.8)",
+                textShadow: "0 2px 12px rgba(0,0,0,0.8)",
               }}
             >
               {round.word}
             </span>
           </div>
         </div>
+
+        <p
+          className="text-xs uppercase tracking-[0.2em]"
+          style={{ color: "var(--color-text-secondary)" }}
+        >
+          {currentClip + 1} / {ROUNDS.length}
+        </p>
       </div>
     );
   }
 
   if (phase === "reveal") {
     return (
-      <div className="min-h-dvh flex flex-col items-center justify-center gap-8 px-6">
+      <div
+        className="min-h-dvh flex flex-col items-center justify-center gap-10 px-6 transition-colors duration-1000"
+        style={{
+          background: "var(--color-reveal-bg)",
+          color: "var(--color-reveal-text)",
+        }}
+      >
         {/* Actress portraits with words */}
-        <div className="flex justify-center gap-4 flex-wrap">
+        <div className="flex justify-center gap-5 flex-wrap">
           {ROUNDS.map((round) => (
             <div key={round.number} className="flex flex-col items-center gap-2">
               <div
-                className="w-14 h-14 rounded-full overflow-hidden"
-                style={{ border: "2px solid var(--color-accent)" }}
+                className="w-12 h-12 rounded-full overflow-hidden"
+                style={{ border: "1.5px solid var(--color-accent)" }}
               >
                 <img
                   src={getProfileUrl(round.startActress.profilePath, "w185")}
@@ -116,7 +131,7 @@ export function CelebrationScreen() {
                 />
               </div>
               <span
-                className="text-sm font-bold"
+                className="font-serif text-sm italic"
                 style={{ color: "var(--color-accent)" }}
               >
                 {round.word}
@@ -125,19 +140,16 @@ export function CelebrationScreen() {
           ))}
         </div>
 
-        {/* Full question */}
-        <h1
-          className="text-3xl font-bold text-center"
-          style={{ color: "var(--color-text)" }}
-        >
+        {/* Full question — serif reveal */}
+        <h1 className="font-serif text-4xl font-bold italic text-center leading-tight">
           Will you be my Valentine?
         </h1>
 
         {/* Yes / No */}
-        <div className="flex gap-4">
+        <div className="flex gap-6 items-center">
           <button
             onClick={handleYes}
-            className="px-8 py-3 rounded-full text-base font-semibold transition-transform active:scale-95"
+            className="px-10 py-3 text-sm uppercase tracking-[0.2em] font-medium transition-all active:scale-95"
             style={{ background: "var(--color-accent)", color: "#fff" }}
           >
             Yes
@@ -145,21 +157,21 @@ export function CelebrationScreen() {
           {!noPressed ? (
             <button
               onClick={handleNo}
-              className="px-8 py-3 rounded-full text-base font-semibold transition-transform active:scale-95"
+              className="px-10 py-3 text-sm uppercase tracking-[0.2em] font-medium transition-all active:scale-95"
               style={{
                 background: "transparent",
-                color: "var(--color-text-muted)",
-                border: "1px solid rgba(255,255,255,0.2)",
+                color: "var(--color-text-secondary)",
+                border: "1px solid var(--color-border)",
               }}
             >
               No
             </button>
           ) : (
             <span
-              className="px-8 py-3 text-base font-semibold"
+              className="text-sm uppercase tracking-[0.15em]"
               style={{ color: "var(--color-error)" }}
             >
-              Wrong answer!
+              Wrong answer
             </span>
           )}
         </div>
@@ -169,19 +181,22 @@ export function CelebrationScreen() {
 
   // Response (after Yes)
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center gap-6 px-6">
-      <div
-        className="text-5xl font-bold text-center"
-        style={{ color: "var(--color-accent)" }}
-      >
-        Happy Valentine&apos;s Day!
-      </div>
-      <div
-        className="text-lg text-center"
-        style={{ color: "var(--color-text-muted)" }}
+    <div
+      className="min-h-dvh flex flex-col items-center justify-center gap-4 px-6"
+      style={{
+        background: "var(--color-reveal-bg)",
+        color: "var(--color-reveal-text)",
+      }}
+    >
+      <h1 className="font-serif text-5xl font-bold italic text-center leading-tight">
+        Happy Valentine&apos;s Day
+      </h1>
+      <p
+        className="text-xs uppercase tracking-[0.2em]"
+        style={{ color: "var(--color-text-secondary)" }}
       >
         I love you, PJ
-      </div>
+      </p>
     </div>
   );
 }

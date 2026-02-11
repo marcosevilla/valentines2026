@@ -14,16 +14,17 @@ export function VideoClip({ round, onContinue }: VideoClipProps) {
   const [hasVideo, setHasVideo] = useState(true);
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full px-6">
-      <div className="text-center">
-        <span className="text-xs uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>
-          Round {round.number}
-        </span>
-      </div>
+    <div className="flex flex-col items-center gap-8 w-full px-6">
+      <p
+        className="text-xs uppercase tracking-[0.2em]"
+        style={{ color: "var(--color-text-secondary)" }}
+      >
+        Round {round.number}
+      </p>
 
       {/* Video or placeholder */}
       <div
-        className="relative w-full max-w-sm aspect-video rounded-xl overflow-hidden"
+        className="relative w-full max-w-sm aspect-video overflow-hidden"
         style={{ background: "var(--color-surface)" }}
       >
         {hasVideo ? (
@@ -37,20 +38,25 @@ export function VideoClip({ round, onContinue }: VideoClipProps) {
             onError={() => setHasVideo(false)}
           />
         ) : (
-          // Placeholder when no video file exists
-          <div className="w-full h-full flex flex-col items-center justify-center gap-3">
+          <div className="w-full h-full flex flex-col items-center justify-center gap-4">
             {round.startActress.profilePath && (
               <img
                 src={getProfileUrl(round.startActress.profilePath, "w185")}
                 alt={round.clipActress}
                 className="w-16 h-16 rounded-full object-cover"
+                style={{ border: "1px solid var(--color-border)" }}
               />
             )}
-            <div className="text-sm font-medium" style={{ color: "var(--color-text)" }}>
-              {round.clipActress}
-            </div>
-            <div className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-              {round.clipMovie}
+            <div className="text-center">
+              <div className="text-sm font-medium" style={{ color: "var(--color-text)" }}>
+                {round.clipActress}
+              </div>
+              <div
+                className="text-xs uppercase tracking-[0.1em] mt-1"
+                style={{ color: "var(--color-text-secondary)" }}
+              >
+                {round.clipMovie}
+              </div>
             </div>
           </div>
         )}
@@ -58,11 +64,10 @@ export function VideoClip({ round, onContinue }: VideoClipProps) {
         {/* Word overlay */}
         <div className="absolute inset-0 flex items-end justify-center pb-4">
           <span
-            className="text-3xl font-bold px-4 py-1 rounded-lg"
+            className="text-2xl font-bold px-4 py-1"
             style={{
               color: "#fff",
-              background: "rgba(0,0,0,0.6)",
-              textShadow: "0 2px 4px rgba(0,0,0,0.5)",
+              background: "rgba(0,0,0,0.7)",
             }}
           >
             {round.word}
@@ -72,13 +77,13 @@ export function VideoClip({ round, onContinue }: VideoClipProps) {
 
       <button
         onClick={onContinue}
-        className="px-6 py-2.5 rounded-full text-sm font-semibold transition-transform active:scale-95"
+        className="px-8 py-2.5 text-sm uppercase tracking-[0.15em] font-medium transition-all active:scale-95"
         style={{
           background: "var(--color-accent)",
           color: "#fff",
         }}
       >
-        Play Round {round.number}
+        Play
       </button>
     </div>
   );

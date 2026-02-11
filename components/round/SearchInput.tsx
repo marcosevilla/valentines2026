@@ -48,7 +48,6 @@ export function SearchInput({
 
       if (cancelled) return;
 
-      // Filter out excluded actors (already in chain)
       const filtered =
         mode === "person"
           ? (data as PersonResult[]).filter(
@@ -88,18 +87,22 @@ export function SearchInput({
         onFocus={() => results.length > 0 && setIsOpen(true)}
         placeholder={placeholder}
         disabled={disabled}
-        className="w-full px-4 py-3 rounded-lg text-base outline-none transition-colors"
+        autoComplete="off"
+        autoCorrect="off"
+        spellCheck="false"
+        autoCapitalize="words"
+        className="w-full px-4 py-3 text-sm outline-none transition-all"
         style={{
           background: "var(--color-surface)",
           color: "var(--color-text)",
-          border: "1px solid rgba(255,255,255,0.1)",
+          borderBottom: "1px solid var(--color-border)",
         }}
       />
       {isLoading && (
         <div
-          className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 border-2 rounded-full animate-spin"
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 border-[1.5px] rounded-full animate-spin"
           style={{
-            borderColor: "var(--color-text-muted)",
+            borderColor: "var(--color-border)",
             borderTopColor: "var(--color-accent)",
           }}
         />

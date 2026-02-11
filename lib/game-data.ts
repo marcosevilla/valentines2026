@@ -110,6 +110,19 @@ export const ROUNDS: RoundConfig[] = [
   },
 ];
 
+// Accent color per round — subtle shift from blood red to coral pink
+export const ROUND_ACCENTS: Record<number, string> = {
+  0: "#E63946", // blood red
+  1: "#D94060", // warming
+  2: "#CC4D7A", // entering rose
+  3: "#BF5A94", // berry
+  4: "#E8547C", // coral pink
+};
+
+export function getRoundAccent(roundIndex: number): string {
+  return ROUND_ACCENTS[roundIndex] ?? "#E63946";
+}
+
 export function getFeedbackMessage(chainLength: number): string {
   const movieCount = Math.floor(chainLength / 2);
   if (movieCount <= 1) return "Incredible!";
