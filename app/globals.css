@@ -3,6 +3,7 @@
 @theme {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-playfair), Georgia, serif;
+  --font-pixel: var(--font-geist-pixel-square), monospace;
 }
 
 :root {
@@ -169,6 +170,41 @@ body {
   }
   75% {
     transform: scaleY(0.9) rotate(-1.5deg);
+  }
+}
+
+/* Video clip fade animations */
+@keyframes clip-fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes clip-fade-out {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.clip-fade-in {
+  animation: clip-fade-in 0.8s ease-out both;
+}
+
+.clip-fade-out {
+  animation: clip-fade-out 0.8s ease-in both;
+}
+
+/* Floating hearts */
+@keyframes heart-float {
+  0% {
+    transform: translateY(0) translateX(0) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+    transform: translateY(-5vh) translateX(0) scale(1);
+  }
+  100% {
+    transform: translateY(-100vh) translateX(var(--heart-drift)) scale(0.6);
+    opacity: 0;
   }
 }
 

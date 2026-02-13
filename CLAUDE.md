@@ -28,7 +28,7 @@
 - **Framework**: Next.js 16 (App Router, Turbopack)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4 with CSS custom properties
-- **Fonts**: Inter (sans, primary) + Playfair Display (serif, reveal moment only)
+- **Fonts**: Geist Sans (semibold, primary) + Geist Pixel Square (round headers) + Playfair Display (serif, reveal moment only)
 - **State**: React useReducer + Context (no external state library)
 - **API**: TMDb (proxied via `/api/tmdb/*` routes to hide key)
 - **Deployment**: Vercel
@@ -37,7 +37,7 @@
 ## Project Structure
 ```
 app/
-  layout.tsx                    # Root layout (Inter + Playfair Display fonts)
+  layout.tsx                    # Root layout (Geist Sans + Playfair Display fonts)
   page.tsx                      # Renders <Game />
   globals.css                   # Tailwind + CSS variables + animations
   api/tmdb/
@@ -51,14 +51,15 @@ components/
     RoundScreen.tsx             # Clip → intro → chain → complete
     CelebrationScreen.tsx       # Montage → reveal → yes/no
   round/
-    RoundIntro.tsx              # Round intro animation (portraits + round label)
+    RoundIntro.tsx              # (Unused — intro merged into ChainBuilder)
     VideoClip.tsx               # Video player + fallback portrait
-    ChainBuilder.tsx            # Core gameplay: search + validate + chain
+    ChainBuilder.tsx            # Core gameplay: search + validate + chain + intro animation
     ChainDisplay.tsx            # Horizontal scrollable card strip
     ChainCard.tsx               # Individual card + connector + icons
     SearchInput.tsx             # Debounced autocomplete input
     SearchResults.tsx           # Dropdown results
     RoundComplete.tsx           # Win feedback + completed chain + continue
+  BackgroundMusic.tsx           # Background music player (volume, duck, fade)
   ActressCollection.tsx         # 5 portrait slots (currently unused)
 lib/
   types.ts                      # All TypeScript types
@@ -66,25 +67,29 @@ lib/
   game-reducer.ts               # useReducer: all game state transitions
   GameContext.tsx                # React Context provider
   tmdb.ts                       # Client-side fetch helpers
+  sounds.ts                     # Web Audio API sound effects (chime, win, undo)
 hooks/
   useDebounce.ts                # 300ms debounce for search
 public/
-  clips/                        # Video clips (added by Marco)
+  actresses/                    # Custom actress photos (added by Marco)
+  clips/                        # Video clips (named per actress-movie)
+  music/                        # "Reborn" from Hereditary soundtrack
 ```
 
 ## Game Flow
 ```
 Intro → [Round 1-5: Clip → Intro Animation → Chain Building → Won] → Celebration
 ```
+Each round opens with a movie clip (fade-in → play → fade-out) before the actress portraits appear.
 
 ## Round Structure
 | Round | Clip Actress / Movie | Connect From → To | Word |
 |-------|---------------------|-------------------|------|
 | 1 | Toni Collette / Hereditary | Toni Collette → Florence Pugh | "Will" |
 | 2 | Florence Pugh / Midsommar | Florence Pugh → Jenna Ortega | "you" |
-| 3 | Jenna Ortega / X | Jenna Ortega → Samara Weaving | "be" |
-| 4 | Samara Weaving / Ready or Not | Samara Weaving → Naomi Scott | "my" |
-| 5 | Naomi Scott / Smile 2 | Naomi Scott → Toni Collette | "Valentine?" |
+| 3 | Jenna Ortega / X | Jenna Ortega → Naomi Scott | "be" |
+| 4 | Naomi Scott / Smile 2 | Naomi Scott → Samara Weaving | "my" |
+| 5 | Samara Weaving / Ready or Not | Samara Weaving → Toni Collette | "Valentine?" |
 
 ## Verified TMDb IDs
 | Actress | TMDb ID |
@@ -123,10 +128,10 @@ Intro → [Round 1-5: Clip → Intro Animation → Chain Building → Won] → C
 ### Typography
 | Element | Font | Weight | Size | Style |
 |---------|------|--------|------|-------|
-| Body / UI | Inter (`--font-sans`) | 400 | 14-16px | Normal |
-| Labels | Inter | 400-500 | 10-12px | Uppercase, tracked |
-| Round numbers | Inter | 400 | 12px | Uppercase, 0.2em tracking |
-| Feedback messages | Inter | 500 | 24px | Normal |
+| Body / UI | Geist Sans (`--font-sans`) | 600 | 14-16px | Semibold |
+| Labels | Geist Sans | 600 | 12px | Uppercase, tracked |
+| Round header | Geist Pixel Square (`--font-pixel`) | 700 | 36px (text-4xl) | Uppercase, 0.05em tracking |
+| Feedback messages | Geist Sans | 600 | 24px | Normal |
 | Celebration reveal | Playfair Display (`--font-serif`) | 700 | 40-48px | Bold italic |
 | Valentine message | Playfair Display | 700 | 48-60px | Bold italic |
 
@@ -135,14 +140,18 @@ Intro → [Round 1-5: Clip → Intro Animation → Chain Building → Won] → C
 ### Chain Cards
 | Variant | Height | Aspect | Notes |
 |---------|--------|--------|-------|
-| Start/End (bookend) | `50dvh` → shrinks to `22dvh` min | 3:4 | Shrinks 5dvh per chain link added |
-| Intermediate (actor/media) | 70% of bookend height, min `16dvh` | 3:4 | |
-| Placeholder | 70% of bookend height | 3:4 | Dashed border, icon-based |
+| Start/End (bookend) | `30dvh` → shrinks to `20dvh` min | 3:4 | Shrinks 3dvh per chain link added |
+| Intermediate (actor/media) | 70% of bookend height, min `14dvh` | 3:4 | Gentle bob animation |
+| Placeholder | Same as intermediate | 3:4 | Dashed border, icon-based |
 
 ### Chain Card Animations
 | Animation | Duration | Easing | Details |
 |-----------|----------|--------|---------|
 | Card flip-in | 400ms | ease-out | `perspective(400px) rotateY(-90deg → 0)` |
+| Card glow | 800ms | ease-out | Accent-colored box-shadow pulse on new card, 200ms delay |
+| Card bob | 3-4s | ease-in-out | `translateY(0 → -6px)` infinite, staggered per card |
+| Card bob alt | 3-4s | ease-in-out | `translateY(-4px → 3px)` alternating pattern |
+| String sway | 3-4.2s | ease-in-out | `scaleY + rotate(±1.5deg)` on connectors, staggered |
 | Card wave (win) | 500ms | ease-out | `translateY(-10px) scale(1.06)` bounce |
 | Wave cascade delay | 80ms per card | — | Starts from last card, ripples backward |
 | Placeholder appear | 300ms | ease-out | `scale(0.9 → 1)`, 300ms delay |
@@ -158,16 +167,21 @@ Intro → [Round 1-5: Clip → Intro Animation → Chain Building → Won] → C
 | Complete | 3400ms | Fade to chain builder |
 
 ### Connectors
-- SVG bezier curves: `M 0 24 C 7 10, 17 38, 24 24`
-- Stroke: `1.5px`, round cap
+- SVG bezier curves: `M 0 20 C 8 8, 20 32, 28 20` (28×40 viewBox)
+- Stroke: `1px`, round cap
 - Confirmed: `var(--color-accent)`, Pending: `var(--color-border)`
+- Subtle sway animation (staggered per connector)
 - No connector to pinned target until chain is complete
 
 ### Search Bar
-- Max width: `max-w-sm` (384px)
-- Left-aligned under chain (`self-start`)
-- Bottom border only (no full border)
+- Max width: `240px`
+- Dynamically positioned under placeholder card (ref-tracked)
+- Transparent background, bottom border only (2px default, 3px accent on focus)
 - 300ms debounce on input
+
+### Undo
+- X button on top-right of newest card, always visible (persistent circular button, overlaps card edge)
+- "Start over" pill button with refresh icon, pinned to bottom of page
 
 ## Session End
 Before ending any session:
@@ -176,8 +190,10 @@ Before ending any session:
 3. If any features are partially complete, describe what's left
 
 ## Current State
-_Updated by Claude at end of each session_
-- **Last worked on:** Horizontal card chain layout, round intro animation, dynamic card sizing
-- **In progress:** Visual polish iteration based on Marco's feedback
-- **Known issues:** Dev server occasionally buffers — kill + clear `.next/` + restart fixes it
+_Updated by Claude at end of each session — 2026-02-10 (Session 3)_
+- **Last worked on:** Shared element intro transition (merged RoundIntro into ChainBuilder), Geist Pixel Square headers, hangman word reveal, sound effects (Web Audio API — card chime, win arpeggio, undo crumple), celebration montage overhaul (full-screen scream clips at timestamps, music at 95%), floating hearts final screen, Start Over pill button with refresh icon, bookend card padding increase
+- **In progress:** Testing celebration flow end-to-end, fine-tuning montage scream timestamps
+- **Modified files:** `app/globals.css`, `app/layout.tsx`, `components/round/ChainBuilder.tsx`, `components/round/ChainCard.tsx`, `components/round/ChainDisplay.tsx`, `components/screens/RoundScreen.tsx`, `components/screens/CelebrationScreen.tsx`, `components/BackgroundMusic.tsx`, `components/Game.tsx`, `lib/game-data.ts`, `lib/game-reducer.ts`, `lib/sounds.ts` (new)
+- **Known issues:** Dev server occasionally buffers — kill + clear `.next/` + restart. `geist/font/pixel` has no generic `GeistPixel` export — use `GeistPixelSquare` specifically.
+- **Next priorities:** Mobile keyboard/search fix (P0), deploy to Vercel, test on real phone, dark-to-light celebration transition, "No" button dodge animation
 - **Deadline:** February 14, 2026

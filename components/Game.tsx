@@ -6,6 +6,7 @@ import { getRoundAccent } from "@/lib/game-data";
 import { IntroScreen } from "@/components/screens/IntroScreen";
 import { RoundScreen } from "@/components/screens/RoundScreen";
 import { CelebrationScreen } from "@/components/screens/CelebrationScreen";
+import { BackgroundMusic } from "@/components/BackgroundMusic";
 
 function GameContent() {
   const { state } = useGame();
@@ -30,14 +31,19 @@ function GameContent() {
     }
   }, [state.phase, state.currentRound]);
 
-  switch (state.phase) {
-    case "intro":
-      return <IntroScreen />;
-    case "playing":
-      return <RoundScreen />;
-    case "celebration":
-      return <CelebrationScreen />;
-  }
+  const musicPlaying = state.phase !== "intro";
+  const musicDucked =
+    state.phase === "playing" && state.roundState.phase === "clip";
+  const musicVolume = state.phase === "celebration" ? 0.95 : undefined;
+
+  return (
+    <>
+      <BackgroundMusic playing={musicPlaying} ducked={musicDucked} volume={musicVolume} />
+      {state.phase === "intro" && <IntroScreen />}
+      {state.phase === "playing" && <RoundScreen />}
+      {state.phase === "celebration" && <CelebrationScreen />}
+    </>
+  );
 }
 
 export function Game() {

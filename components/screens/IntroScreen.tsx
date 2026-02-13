@@ -20,12 +20,6 @@ export function IntroScreen() {
         >
           Scream Queens
         </h1>
-        <p
-          className="text-sm uppercase tracking-[0.15em]"
-          style={{ color: "var(--color-text-secondary)" }}
-        >
-          Six Degrees
-        </p>
       </div>
 
       <p

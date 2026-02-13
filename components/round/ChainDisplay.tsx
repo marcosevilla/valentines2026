@@ -96,7 +96,7 @@ export function ChainDisplay({
           ref={scrollRef}
           className="flex-1 overflow-x-auto scrollbar-hide"
         >
-          <div className="flex items-center px-4 py-4 min-w-min">
+          <div className="flex items-center px-8 py-4 min-w-min">
             {displayChain.map((link, i) => (
               <div
                 key={`${link.type}-${link.id}-${i}`}
@@ -134,7 +134,7 @@ export function ChainDisplay({
         </div>
 
         {/* Pinned target actress — no connector until complete */}
-        <div className="flex-shrink-0 flex items-center pr-4">
+        <div className="flex-shrink-0 flex items-center pr-8">
           {isComplete && <ChainConnector confirmed />}
           <ChainCard
             variant="end"

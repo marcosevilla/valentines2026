@@ -27,7 +27,7 @@ export function getPosterUrl(path: string | null, size = "w154"): string {
 export const ROUNDS: RoundConfig[] = [
   {
     number: 1,
-    clipUrl: "/clips/round-1.mp4",
+    clipUrl: "/clips/toni-colette-hereditary-vid.mp4",
     clipActress: "Toni Collette",
     clipMovie: "Hereditary",
     startActress: {
@@ -44,7 +44,7 @@ export const ROUNDS: RoundConfig[] = [
   },
   {
     number: 2,
-    clipUrl: "/clips/round-2.mp4",
+    clipUrl: "/clips/florence-pugh-midsommar-vid.mp4",
     clipActress: "Florence Pugh",
     clipMovie: "Midsommar",
     startActress: {
@@ -61,7 +61,7 @@ export const ROUNDS: RoundConfig[] = [
   },
   {
     number: 3,
-    clipUrl: "/clips/round-3.mp4",
+    clipUrl: "/clips/jenna-ortega-x-vid.mp4",
     clipActress: "Jenna Ortega",
     clipMovie: "X",
     startActress: {
@@ -70,38 +70,38 @@ export const ROUNDS: RoundConfig[] = [
       profilePath: "/actresses/jenna-ortega-x.jpg",
     },
     endActress: {
-      id: ACTRESS_IDS.samaraWeaving,
-      name: "Samara Weaving",
-      profilePath: "/actresses/samara-weaving-ready-or-not.png",
+      id: ACTRESS_IDS.naomiScott,
+      name: "Naomi Scott",
+      profilePath: "/actresses/naomi-scott-smile-2.jpg",
     },
     word: "be",
   },
   {
     number: 4,
-    clipUrl: "/clips/round-4.mp4",
-    clipActress: "Samara Weaving",
-    clipMovie: "Ready or Not",
-    startActress: {
-      id: ACTRESS_IDS.samaraWeaving,
-      name: "Samara Weaving",
-      profilePath: "/actresses/samara-weaving-ready-or-not.png",
-    },
-    endActress: {
-      id: ACTRESS_IDS.naomiScott,
-      name: "Naomi Scott",
-      profilePath: "/actresses/naomi-scott-smile-2.jpg",
-    },
-    word: "my",
-  },
-  {
-    number: 5,
-    clipUrl: "/clips/round-5.mp4",
+    clipUrl: "/clips/naomi-scott-smile-2-vid.mp4",
     clipActress: "Naomi Scott",
     clipMovie: "Smile 2",
     startActress: {
       id: ACTRESS_IDS.naomiScott,
       name: "Naomi Scott",
       profilePath: "/actresses/naomi-scott-smile-2.jpg",
+    },
+    endActress: {
+      id: ACTRESS_IDS.samaraWeaving,
+      name: "Samara Weaving",
+      profilePath: "/actresses/samara-weaving-ready-or-not.png",
+    },
+    word: "my",
+  },
+  {
+    number: 5,
+    clipUrl: "/clips/samara-weaving-ready-or-not-vid.mp4",
+    clipActress: "Samara Weaving",
+    clipMovie: "Ready or Not",
+    startActress: {
+      id: ACTRESS_IDS.samaraWeaving,
+      name: "Samara Weaving",
+      profilePath: "/actresses/samara-weaving-ready-or-not.png",
     },
     endActress: {
       id: ACTRESS_IDS.toniCollette,

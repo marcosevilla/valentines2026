@@ -61,7 +61,7 @@ export function ChainCard({
     imgSrc = imagePath ? getPosterUrl(imagePath, "w342") : "";
   }
 
-  const shouldBob = !isBookend && !isNew && !isWaving && variant !== "placeholder";
+  const shouldBob = !isBookend && !isNew && !isWaving;
   const bobAnim = bobIndex % 2 === 0 ? "card-bob" : "card-bob-alt";
   const bobDuration = 3 + (bobIndex % 3) * 0.5; // 3s, 3.5s, or 4s
   const bobDelay = bobIndex * 0.4;
@@ -77,47 +77,51 @@ export function ChainCard({
       }}
     >
       <div
-        className="relative aspect-[3/4] overflow-hidden group"
-        style={{
-          height: `${h}dvh`,
-          border: isActive
-            ? "1px solid var(--color-accent)"
-            : "1px solid rgba(255, 255, 255, 0.08)",
-          boxShadow: isActive
-            ? "0 0 12px 0 rgba(var(--color-accent-rgb, 230, 57, 70), 0.15)"
-            : "inset 0 0 0 0.5px rgba(255, 255, 255, 0.04)",
-          transition: "all 0.5s ease",
-        }}
+        className="relative"
+        style={{ height: `${h}dvh` }}
       >
-        {imgSrc ? (
-          <img
-            src={imgSrc}
-            alt={name || ""}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div
-            className="w-full h-full"
-            style={{ background: "var(--color-surface)" }}
-          />
-        )}
+        <div
+          className="aspect-[3/4] overflow-hidden h-full"
+          style={{
+            border: isActive
+              ? "1px solid var(--color-accent)"
+              : "1px solid rgba(255, 255, 255, 0.08)",
+            boxShadow: isActive
+              ? "0 0 12px 0 rgba(var(--color-accent-rgb, 230, 57, 70), 0.15)"
+              : "inset 0 0 0 0.5px rgba(255, 255, 255, 0.04)",
+            transition: "all 0.5s ease",
+          }}
+        >
+          {imgSrc ? (
+            <img
+              src={imgSrc}
+              alt={name || ""}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div
+              className="w-full h-full"
+              style={{ background: "var(--color-surface)" }}
+            />
+          )}
+        </div>
 
-        {/* Undo X button — appears on hover over newest card */}
+        {/* Undo X button — persistent on newest card, overlaps top-right edge */}
         {isNewest && onRemove && (
           <button
             onClick={(e) => {
               e.stopPropagation();
               onRemove();
             }}
-            className="absolute top-1 right-1 w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+            className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center z-10 transition-transform duration-150 hover:scale-110 active:scale-95"
             style={{
-              background: "rgba(0,0,0,0.7)",
-              color: "var(--color-text)",
+              background: "var(--color-bg)",
+              color: "var(--color-text-secondary)",
               border: "1px solid var(--color-border)",
             }}
             aria-label="Undo"
           >
-            <svg width="10" height="10" viewBox="0 0 10 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <svg width="8" height="8" viewBox="0 0 10 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M1 1l8 8M9 1l-8 8" />
             </svg>
           </button>
